@@ -16,8 +16,37 @@ describe 'Game of Life' do
       expect(cell.board).to eq(subject.board)
 		end
 
+		specify 'creates an alive cell  (explicit)' do
+			cell = subject.create_at(0, -1, 1)
+			expect(cell).to be_alive
+		end
+
+		specify 'creates an alive cell (implicit)' do
+			cell = subject.create_at(0, -1)
+			expect(cell).to be_alive
+		end
+
+		specify 'creates a dead cell' do
+			cell = subject.create_at(0, -1, 0)
+			expect(cell).to be_dead
+		end
+
+		specify 'filter only alive cells' do
+			cell = subject.create_at(0, -1, 1)	# alive cell
+			cell = subject.create_at(1, 1, 0)		# dead cell
+      expect(subject.neighbours.count).to eq(1)
+			board.cells.select{|cell| cell.alive?}
+		end
+
+		specify 'filter only dead cells' do
+			cell = subject.create_at(0, -1, 1)	# alive cell
+			cell = subject.create_at(1, 1, 0)		# dead cell
+      expect(subject.neighbours.count).to eq(1)
+			board.cells.select{|cell| cell.dead?}
+		end
+
 		specify 'check for a cell on its N' do
-			cell = subject.create_at(0, 1)
+			cell = subject.create_at(0, 1, 1)
       expect(subject.neighbours.count).to eq(1)
 		end
 
@@ -58,12 +87,12 @@ describe 'Game of Life' do
 
 		specify 'when a cell dies' do
 			subject.die
-      expect(subject.board.cells).not_to include subject
+      expect(subject.state).to eq(0)
 		end
 
 		specify 'when a cell relives' do
 			subject.relive
-      expect(subject.board.cells).to include subject
+      expect(subject.state).to eq(1)
 		end
 
 		specify 'more than 3 neighbours' do
@@ -75,34 +104,35 @@ describe 'Game of Life' do
 		end
 	end
 
-	it 'Rule #1: Any live cell with fewer than two live neighbours dies' do
+	specify 'Rule #1: Any live cell with fewer than two live neighbours dies' do
 		cell = Cell.new(board)
 		cell_1 = cell.create_at(2,0)
 		board.nextgen
 		expect(cell).to be_dead
 	end
 
-	it 'Rule #2: Any live cell with two or three live neighbours lives on to the next generation' do
+	specify 'Rule #2: Any live cell with two or three live neighbours lives on to the next generation' do
 		cell = Cell.new(board)
 		cell_1 = cell.create_at(1,0)
-		cell_2 = cell.create_at(-1, 0)
+		cell_2 = cell.create_at(-1,0)
 		board.nextgen
 		expect(cell).to be_alive
 	end
 
-	it 'Rule #3: Any live cell with more than three live neighbours dies' do
+	specify 'Rule #3: Any live cell with more than three live neighbours dies' do
 		cell = Cell.new(board)
 		cell_1 = cell.create_at(1,0)
-		cell_2 = cell.create_at(-1, 0)
-		cell_3 = cell.create_at(-1, 1)
-		cell_4 = cell.create_at(1, 1)
+		cell_2 = cell.create_at(-1,0)
+		cell_3 = cell.create_at(1,1)
+		cell_4 = cell.create_at(1,-1)
 		board.nextgen
 		expect(cell).to be_dead
 	end
 	
-	it 'Rule #4: Any dead cell with exactly three live neighbours becomes a live cell' do
+	specify 'Rule #4: Any dead cell with exactly three live neighbours becomes a live cell' do
 		cell = Cell.new(board)
 		cell.die
+		expect(cell).to be_dead
 		cell_1 = cell.create_at(1,0)
 		cell_2 = cell.create_at(-1, 0)
 		cell_3 = cell.create_at(-1, 1)
