@@ -3,25 +3,86 @@ require 'rspec'
 require './board'
 require './cell'
 
-describe 'game of life' do
+describe 'Game of Life' do
 	let(:board) { Board.new }
-	context '' do
-		subject { Cell.new }
+
+	describe 'methods' do
+		subject { Cell.new(board) }
 		it 'create a new relative to' do
 			cell = subject.create_at(3, 5)
 			cell.is_a?(Cell).should be true
 			cell.x.should == 3
 			cell.y.should == 5
+      expect(cell.board).to eq(subject.board)
 		end
+
+		specify 'check for a cell on its N' do
+			cell = subject.create_at(0, 1)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its NE' do
+			cell = subject.create_at(1, 1)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its NW' do
+			cell = subject.create_at(-1, 1)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its W' do
+			cell = subject.create_at(-1, 0)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its E' do
+			cell = subject.create_at(1, 0)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its S' do
+			cell = subject.create_at(0, -1)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its SE' do
+			cell = subject.create_at(1, -1)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'check for a cell on its SW' do
+			cell = subject.create_at(-1, -1)
+      expect(subject.neighbours.count).to eq(1)
+		end
+
+		it 'when a cell dies' do
+			subject.die
+      expect(subject.board.cells).not_to include subject
+		end
+
 	end
 
-	it 'Any live cell with fewer than two live neighbours dies' do
+	it 'Rule #1: Any live cell with fewer than two live neighbours dies' do
 		cell = Cell.new(board)
-		cell.neighbors.count.should == 0
+		cell_1 = cell.create_at(2,0)
+		board.nextgen
+		expect(cell).to be_dead
 	end
 
-	# Any live cell with two or three live neighbours lives on to the next generation.
-	# Any live cell with more than three live neighbours dies.
-	# Any dead cell with exactly three live neighbours becomes a live cell.
+	it 'Rule #2: Any live cell with two or three live neighbours lives on to the next generation' do
+		cell = Cell.new(board)
+		cell_1 = cell.create_at(1,0)
+		cell_2 = cell.create_at(-1, 0)
+		board.nextgen
+		expect(cell).to be_alive
+	end
+
+	it 'Rule #3: Any live cell with more than three live neighbours dies' do
+	end
+	
+	it 'Rule #4: Any dead cell with exactly three live neighbours becomes a live cell' do
+	end
+
 
 end
