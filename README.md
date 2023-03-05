@@ -1,4 +1,4 @@
-#Game of Life
+# Game of Life
 
 Given a cell we define its eight *neighbours* as the cells that are horizontally, vertically, or diagonally adjacent.
 
