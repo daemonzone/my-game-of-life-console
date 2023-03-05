@@ -33,6 +33,10 @@ class Cell
   	 board.cells -= [self]
   end
 
+  def relive
+  	board.cells << self
+  end
+
   def dead?
   	!board.cells.include?(self)
   end

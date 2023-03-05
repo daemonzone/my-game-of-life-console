@@ -8,7 +8,8 @@ class Board
 
 	def nextgen
 		cells.each do |cell|
-			cell.die if cell.neighbours.count < 2
+			cell.die 		if cell.neighbours.count < 2 || cell.neighbours.count > 3
+			cell.relive if cell.neighbours.count == 3
 		end
 	end
 
