@@ -2,7 +2,7 @@ class Cell
 
   attr_accessor :board, :x, :y, :state
 
-  def initialize(board, x=0, y=0, state=1)
+  def initialize(board, x=0, y=0, state=self.alive)
   	@board = board
   	@x = x
   	@y = y
@@ -26,28 +26,36 @@ class Cell
   	@neighbours
   end
 
-  def create_at(x, y, state=1)
+  def create_at(x, y, state=self.alive)
   	Cell.new(board, x, y, state)
   end
 
   def die
   	 # board.cells -= [self]
-  	 self.state = 0
+  	 self.state = self.dead
   end
 
   def relive
   	# board.cells << self
-  	self.state = 1
+  	self.state = self.alive
   end
 
+	# the population state (* represents a live cell, . represents a dead cell)
   def dead?
   	# !board.cells.include?(self)
-  	self.state == 0
+  	self.state == self.dead
   end
 
   def alive?
   	# board.cells.include?(self)
-  	self.state == 1
+  	self.state == self.alive
   end
 
+  def alive
+  	'*'
+  end
+
+  def dead
+  	'-'
+  end
 end

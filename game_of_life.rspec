@@ -10,14 +10,14 @@ describe 'Game of Life' do
 		subject { Cell.new(board) }
 		it 'create a new relative to' do
 			cell = subject.create_at(3, 5)
-			cell.is_a?(Cell).should be true
-			cell.x.should == 3
-			cell.y.should == 5
+			expect(cell.is_a?(Cell)).to be true
+			expect(cell.x).to eq(3)
+			expect(cell.y).to eq(5)
       expect(cell.board).to eq(subject.board)
 		end
 
 		specify 'creates an alive cell  (explicit)' do
-			cell = subject.create_at(0, -1, 1)
+			cell = subject.create_at(0, -1, subject.alive)
 			expect(cell).to be_alive
 		end
 
@@ -27,26 +27,26 @@ describe 'Game of Life' do
 		end
 
 		specify 'creates a dead cell' do
-			cell = subject.create_at(0, -1, 0)
+			cell = subject.create_at(0, -1, subject.dead)
 			expect(cell).to be_dead
 		end
 
 		specify 'filter only alive cells' do
-			cell = subject.create_at(0, -1, 1)	# alive cell
-			cell = subject.create_at(1, 1, 0)		# dead cell
+			cell = subject.create_at(0, -1, subject.alive)	# alive cell
+			cell = subject.create_at(1, 1, subject.dead)		# dead cell
       expect(subject.neighbours.count).to eq(1)
 			board.cells.select{|cell| cell.alive?}
 		end
 
 		specify 'filter only dead cells' do
-			cell = subject.create_at(0, -1, 1)	# alive cell
-			cell = subject.create_at(1, 1, 0)		# dead cell
+			cell = subject.create_at(0, -1, subject.alive)	# alive cell
+			cell = subject.create_at(1, 1, subject.dead)		# dead cell
       expect(subject.neighbours.count).to eq(1)
 			board.cells.select{|cell| cell.dead?}
 		end
 
 		specify 'check for a cell on its N' do
-			cell = subject.create_at(0, 1, 1)
+			cell = subject.create_at(0, 1, subject.alive)
       expect(subject.neighbours.count).to eq(1)
 		end
 
@@ -87,12 +87,12 @@ describe 'Game of Life' do
 
 		specify 'when a cell dies' do
 			subject.die
-      expect(subject.state).to eq(0)
+      expect(subject.state).to eq(subject.dead)
 		end
 
 		specify 'when a cell relives' do
 			subject.relive
-      expect(subject.state).to eq(1)
+      expect(subject.state).to eq(subject.alive)
 		end
 
 		specify 'more than 3 neighbours' do
@@ -140,5 +140,30 @@ describe 'Game of Life' do
 		expect(cell).to be_alive
 	end
 
+	specify 'matrix import' do 
+		rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
+		File.write("example_matrix.txt", rows.join("\n"), mode: "w")
+
+		board.import("example_matrix.txt")
+		
+		expect(board.rows.count).to eq(5)
+		expect(board.row_length).to eq(9)
+	end
+
+	specify 'matrix import - only allowed chars (*.)' do
+		board.import("first_generation.txt").each do |row|
+			expect(row.delete("*.")).to be_empty
+		end
+	end
+
+	specify 'matrix import.create_life not raising an exception with a valid matrix' do 
+		board.import("first_generation.txt")
+		expect { board.create_life }.not_to raise_error
+	end
+
+	specify 'matrix import.create_life not raising an exception with an invalid matrix' do 
+		board.import("broken_matrix.txt")
+		expect { board.create_life }.to raise_error(RuntimeError, 'Generation Matrix is not valid')
+  end
 
 end
