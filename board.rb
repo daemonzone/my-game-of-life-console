@@ -13,6 +13,8 @@ class Board
 			cell.die 		if cell.neighbours.select{|c| c.alive?}.count < 2 || cell.neighbours.select{|c| c.alive?}.count > 3
 			cell.relive if cell.neighbours.count == 3
 		end
+
+		self
 	end
 
   def board_size

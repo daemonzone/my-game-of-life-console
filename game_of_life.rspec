@@ -140,30 +140,44 @@ describe 'Game of Life' do
 		expect(cell).to be_alive
 	end
 
-	specify 'matrix import' do 
-		rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
-		File.write("example_matrix.txt", rows.join("\n"), mode: "w")
-
-		board.import("example_matrix.txt")
+	describe 'file operations' do
 		
-		expect(board.rows.count).to eq(5)
-		expect(board.row_length).to eq(9)
-	end
+		specify 'example matrix import' do 
+			rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
+			File.write("example_matrix.txt", rows.join("\n"), mode: "w")
 
-	specify 'matrix import - only allowed chars (*.)' do
-		board.import("first_generation.txt").each do |row|
-			expect(row.delete("*.")).to be_empty
+			board.import("example_matrix.txt")
+			
+			expect(board.rows.count).to eq(5)
+			expect(board.row_length).to eq(9)
 		end
-	end
 
-	specify 'matrix import.create_life not raising an exception with a valid matrix' do 
-		board.import("first_generation.txt")
-		expect { board.create_life }.not_to raise_error
-	end
+		specify 'example matrix import and create_life - cells count' do 
+			rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
+			File.write("example_matrix.txt", rows.join("\n"), mode: "w")
 
-	specify 'matrix import.create_life not raising an exception with an invalid matrix' do 
-		board.import("broken_matrix.txt")
-		expect { board.create_life }.to raise_error(RuntimeError, 'Generation Matrix is not valid')
-  end
+			board.import("example_matrix.txt")
+			board.create_life
+			
+			expect(board.cells.count).to eq(45)
+		end
+
+
+		specify 'matrix import - only allowed chars (*.)' do
+			board.import("first_generation.txt").each do |row|
+				expect(row.delete("*.")).to be_empty
+			end
+		end
+
+		specify 'matrix import.create_life not raising an exception with a valid matrix' do 
+			board.import("first_generation.txt")
+			expect { board.create_life }.not_to raise_error
+		end
+
+		specify 'matrix import.create_life not raising an exception with an invalid matrix' do 
+			board.import("broken_matrix.txt")
+			expect { board.create_life }.to raise_error(RuntimeError, 'Generation Matrix is not valid')
+	  end
+	end
 
 end
