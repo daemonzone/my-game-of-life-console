@@ -37,7 +37,7 @@ class Board
 	end
 
 	def create_life
-		@row_length = @rows[0].length
+		@row_length = @rows[0].length unless @rows.nil?
 	  	@rows.each_with_index do |row, idx|
 	    raise 'Generation Matrix is not valid' if @row_length != row.strip.length || !chars_valid?(row)
 
