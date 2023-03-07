@@ -56,6 +56,6 @@ class Cell
   end
 
   def dead
-  	'-'
+  	'.'
   end
 end
