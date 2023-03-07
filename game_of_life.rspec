@@ -155,29 +155,33 @@ describe 'Game of Life' do
 		specify 'example matrix import and create_life - cells count' do 
 			rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
 			File.write("example_matrix.txt", rows.join("\n"), mode: "w")
-
 			board.import("example_matrix.txt")
-			board.create_life
-			
+			board.create_life			
 			expect(board.cells.count).to eq(45)
 		end
 
-
-		specify 'matrix import - only allowed chars (*.)' do
+		specify 'matrix import only allowed chars (*.)' do
 			board.import("first_generation.txt").each do |row|
-				expect(row.delete("*.")).to be_empty
+				expect(board.chars_valid?(row)).to be true
 			end
 		end
+
+		specify 'matrix import only allowed chars (*.) raise an exception if other chars are present' do
+			board.import("broken_matrix.txt")
+			expect { board.create_life }.to raise_error(RuntimeError, 'Generation Matrix is not valid')
+		end
+
+		specify 'matrix import.create_life raising an exception with an invalid matrix' do 
+			board.import("broken_matrix.txt")
+			expect { board.create_life }.to raise_error(RuntimeError, 'Generation Matrix is not valid')
+	  end
 
 		specify 'matrix import.create_life not raising an exception with a valid matrix' do 
 			board.import("first_generation.txt")
 			expect { board.create_life }.not_to raise_error
 		end
 
-		specify 'matrix import.create_life not raising an exception with an invalid matrix' do 
-			board.import("broken_matrix.txt")
-			expect { board.create_life }.to raise_error(RuntimeError, 'Generation Matrix is not valid')
-	  end
+
 	end
 
 end

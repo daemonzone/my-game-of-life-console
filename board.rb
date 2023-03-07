@@ -21,6 +21,10 @@ class Board
     @rows * @columns
   end
 
+  def chars_valid?(row)
+  	row.delete(".*").empty?
+  end
+
   def import(input_file)
     # puts "Importing #{input_file}..."
     unless input_file.nil?
@@ -40,7 +44,7 @@ class Board
 	def create_life
 		@row_length = @rows[0].length
 	  @rows.each_with_index do |row, idx|
-	    raise 'Generation Matrix is not valid' if @row_length != row.strip.length
+	    raise 'Generation Matrix is not valid' if @row_length != row.strip.length || !chars_valid?(row)
 
 	    row.chars.each_with_index do |c, column|
 	    	# print c
