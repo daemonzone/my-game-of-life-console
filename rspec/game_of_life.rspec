@@ -13,7 +13,7 @@ describe 'Game of Life' do
 			expect(cell.is_a?(Cell)).to be true
 			expect(cell.x).to eq(3)
 			expect(cell.y).to eq(5)
-      expect(cell.board).to eq(subject.board)
+      		expect(cell.board).to eq(subject.board)
 		end
 
 		specify 'creates an alive cell  (explicit)' do

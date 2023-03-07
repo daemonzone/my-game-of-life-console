@@ -32,10 +32,10 @@ class Board
       @rows = File.readlines(input_file)
   	  
   	  @rows.each do |row|
-		    @row_length = row.strip.length
-		  end
+	    @row_length = row.strip.length
+	  end
 
-		  @rows = @rows.map{ |r| r.strip }
+	  @rows = @rows.map{ |r| r.strip }
     end # unless input_file.nil?
 
     @rows
