@@ -32,17 +32,13 @@ describe 'Game of Life' do
 		end
 
 		specify 'filter only alive cells' do
-			cell = subject.create_at(0, -1, subject.alive)	# alive cell
-			cell = subject.create_at(1, 1, subject.dead)	# dead cell
+			cell = subject.create_at(1, 1, subject.alive)	# alive cell
       		expect(subject.neighbours.count).to eq(1)
-			board.cells.select{|cell| cell.alive?}
 		end
 
 		specify 'filter only dead cells' do
-			cell = subject.create_at(0, -1, subject.alive)	# alive cell
 			cell = subject.create_at(1, 1, subject.dead)	# dead cell
-      		expect(subject.neighbours.count).to eq(1)
-			board.cells.select{|cell| cell.dead?}
+      		expect(subject.neighbours.count).to eq(0)
 		end
 
 		specify 'check for a cell on its N' do

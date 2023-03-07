@@ -1,4 +1,4 @@
-require './models/board.rb'
+require './models/board'
 require './models/cell'
 
 if ARGV.length < 1
