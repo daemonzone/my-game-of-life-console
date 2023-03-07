@@ -57,6 +57,7 @@ class Board
 	end
 
   def display
+  	puts `clear`
     @cells.each_with_index do |r,idx|
 	  	# puts "#{idx} <=> #{@row_length}"
     	print r.state

@@ -1,7 +1,7 @@
 require 'rspec'
 
-require './board'
-require './cell'
+require './models/board.rb'
+require './models/cell.rb'
 
 describe 'Game of Life' do
 	let(:board) { Board.new }
@@ -33,66 +33,66 @@ describe 'Game of Life' do
 
 		specify 'filter only alive cells' do
 			cell = subject.create_at(0, -1, subject.alive)	# alive cell
-			cell = subject.create_at(1, 1, subject.dead)		# dead cell
-      expect(subject.neighbours.count).to eq(1)
+			cell = subject.create_at(1, 1, subject.dead)	# dead cell
+      		expect(subject.neighbours.count).to eq(1)
 			board.cells.select{|cell| cell.alive?}
 		end
 
 		specify 'filter only dead cells' do
 			cell = subject.create_at(0, -1, subject.alive)	# alive cell
-			cell = subject.create_at(1, 1, subject.dead)		# dead cell
-      expect(subject.neighbours.count).to eq(1)
+			cell = subject.create_at(1, 1, subject.dead)	# dead cell
+      		expect(subject.neighbours.count).to eq(1)
 			board.cells.select{|cell| cell.dead?}
 		end
 
 		specify 'check for a cell on its N' do
 			cell = subject.create_at(0, 1, subject.alive)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its NE' do
 			cell = subject.create_at(1, 1)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its NW' do
 			cell = subject.create_at(-1, 1)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its W' do
 			cell = subject.create_at(-1, 0)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its E' do
 			cell = subject.create_at(1, 0)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its S' do
 			cell = subject.create_at(0, -1)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its SE' do
 			cell = subject.create_at(1, -1)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'check for a cell on its SW' do
 			cell = subject.create_at(-1, -1)
-      expect(subject.neighbours.count).to eq(1)
+      		expect(subject.neighbours.count).to eq(1)
 		end
 
 		specify 'when a cell dies' do
 			subject.die
-      expect(subject.state).to eq(subject.dead)
+      		expect(subject.state).to eq(subject.dead)
 		end
 
 		specify 'when a cell relives' do
 			subject.relive
-      expect(subject.state).to eq(subject.alive)
+      		expect(subject.state).to eq(subject.alive)
 		end
 
 		specify 'more than 3 neighbours' do
@@ -100,7 +100,7 @@ describe 'Game of Life' do
 			cell_2 = subject.create_at(-1, 0)
 			cell_3 = subject.create_at(-1, 1)
 			cell_4 = subject.create_at(1, 1)
-	    expect(subject.neighbours.count).to eq(4)
+	    	expect(subject.neighbours.count).to eq(4)
 		end
 	end
 
@@ -143,21 +143,29 @@ describe 'Game of Life' do
 	describe 'file operations' do
 		
 		specify 'example matrix import' do 
+			filename = "example_matrix.txt"
 			rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
-			File.write("example_matrix.txt", rows.join("\n"), mode: "w")
+			File.write(filename, rows.join("\n"), mode: "w")
 
-			board.import("example_matrix.txt")
+			board.import(filename)
 			
 			expect(board.rows.count).to eq(5)
 			expect(board.row_length).to eq(9)
+
+			File.delete(filename) if File.exist?(filename)
 		end
 
 		specify 'example matrix import and create_life - cells count' do 
+			filename = "example_matrix.txt"
 			rows = ["**....***", "*.*.*..*.", ".**....*.", "**..*....", "***..***."]
-			File.write("example_matrix.txt", rows.join("\n"), mode: "w")
-			board.import("example_matrix.txt")
+			File.write(filename, rows.join("\n"), mode: "w")
+			
+			board.import(filename)
 			board.create_life			
+			
 			expect(board.cells.count).to eq(45)
+			
+			File.delete(filename) if File.exist?(filename)
 		end
 
 		specify 'matrix import only allowed chars (*.)' do
