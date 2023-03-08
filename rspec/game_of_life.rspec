@@ -144,7 +144,8 @@ describe 'Game of Life' do
 			File.write(filename, rows.join("\n"), mode: "w")
 
 			board.import(filename)
-			
+			board.create_life			
+
 			expect(board.rows.count).to eq(5)
 			expect(board.row_length).to eq(9)
 
